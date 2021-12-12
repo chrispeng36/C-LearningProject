@@ -1,0 +1,1 @@
+/usr/bin/c++ -g CMakeFiles/cppProject.dir/SortAlgrithms/Top10Sorts.cpp.o -o cppProject 
