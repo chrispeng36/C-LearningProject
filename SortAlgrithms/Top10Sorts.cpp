@@ -83,34 +83,65 @@ public:
      * 递归切，直到切成单个元素，然后重新组装合并，单个元素合并成小数组，
      * 两个小数组合并成大数组，直到最终合并完成，排序完毕。
      */
+     //将[l1,r1]和[l2,r2]的有序序列合并成一个有序序列
+    void merge(vector<int> &nums,int  l1,int r1,int l2,int r2){
+        int i = l1;//左半部分起始位置
+        int j = l2;//you半部分起始位置
+        int n = (r1 - l1 + 1) + (r2 - l2 + 1);
+        vector<int> temp(n);
+        int k = 0;
+        while (i <= r1 && j <= r2){
+            if (nums[i] < nums[j])
+                temp[k ++] = nums[i ++];
+            else
+                temp[k ++] = nums[j++];
+        }
+        //如果还有剩余就放进辅助数组中
+        if(i <= r1)
+            temp[k++] = nums[i++];
+        while (j <= r2)
+            temp[k++] = nums[j++];
+        //更新原始数组元素
+        for (int i = 0; i < n; ++i) {
+            nums[l1 + i] = temp[i];
+        }
+    }
+    void MergeSort(vector<int> &arr,int start,int end){
+        if (start < end){
+            int mid = (start + end) >> 1;
+            MergeSort(arr,start,mid);
+            MergeSort(arr,mid + 1,end);
+            merge(arr,start,mid,mid + 1,end);//合并已经有序的数组
+        }
+    }
 
-    void MergeSort(vector<int> &arr){
-        int len = arr.size();
-        vector<int> a = arr;
-        vector<int> b = vector<int>(len);
-        for (int seg = 1; seg < len; seg += seg) {
-            for (int start = 0; start < len; start += seg + seg) {
-                int low = start, mid = min(start + seg, len), high = min(start + seg + seg, len);
-                int k = low;
-                int start1 = low, end1 = mid;
-                int start2 = mid, end2 = high;
-                while (start1 < end1 && start2 < end2)
-                    b[k++] = a[start1] < a[start2] ? a[start1++] : a[start2++];
-                while (start1 < end1)
-                    b[k++] = a[start1++];
-                while (start2 < end2)
-                    b[k++] = a[start2++];
-            }
-            vector<int> temp = a;
-            a = b;
-            b = temp;
+
+    void QuickSort(vector<int> &arr,int low,int high){
+        if (low >= high)
+            return;
+        int first = low;
+        int last = high;
+        int key = arr[first];
+
+        while (first < last){
+            //将比第一个小的移动到前面
+            while (first < last && arr[last] >= key)
+                last --;
+            if (first < last)
+                arr[first++] = arr[last];
+            //将比第一个大的移动到后面
+            if(first < last && arr[first] <= key)
+                first ++;
+            if (first < last)
+                arr[last--] = arr[first];
+
         }
-        if (a != arr) {
-            for (int i = 0; i < len; i++)
-                b[i] = a[i];
-            b = a;
-        }
-//        delete[] b;
+
+
+        //基准置位
+        arr[first] = key;
+        QuickSort(arr,low,first - 1);
+        QuickSort(arr,first + 1,high);
     }
 };
 
@@ -162,7 +193,17 @@ void testShellSort(){
 void testMergeSort(){
     vector<int> arr = {5,4,8,10,28,9,777,44};
     Sort *p = new Sort();
-    p->MergeSort(arr);
+    p->MergeSort(arr,0,7);
+    for (int i = 0; i < arr.size(); ++i) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+void testQUickSort(){
+    vector<int> arr = {5,4,8,10,28,9,777,44};
+    Sort *p = new Sort();
+    p->QuickSort(arr,0,7);
     for (int i = 0; i < arr.size(); ++i) {
         cout << arr[i] << " ";
     }
@@ -174,6 +215,7 @@ int main(){
 //    testSelectSort();
 //    testInsertSort();
 //    testShellSort();
-    testMergeSort();
+//    testMergeSort();
+    testQUickSort();
     return 0;
 }
