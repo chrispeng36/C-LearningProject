@@ -143,6 +143,44 @@ public:
         QuickSort(arr,low,first - 1);
         QuickSort(arr,first + 1,high);
     }
+
+    /**
+     * 堆是一种优先队列，可以把最大堆看作是一个完全二叉树，位于堆顶的元素总是整棵树的最大值，
+     * 每个子结点的值都要比父节点小，一旦堆中的数据发生变化，必须对堆进行一次重新构建。
+     * 只要从堆顶一直取值就好了
+     */
+    void max_heapify(int arr[],int start,int end){
+        int dad = start;
+        int son = dad * 2 + 1;
+        while (son <= end){
+            if (son + 1 <= end && arr[son] < arr[son + 1]){
+                son ++;
+            }
+            /**
+             * to make sure arr[dad] > rr[son]
+             */
+            if (arr[dad] > arr[son])
+                return;
+            else{
+                int temp = arr[dad];
+                arr[dad] = arr[son];
+                arr[son] = temp;
+
+                dad = son;
+                son = dad * 2 + 1;
+            }
+        }
+    }
+
+    void HeapSort(int arr[],int len){
+        for (int i = len / 2; i >= 0; i--) {
+            max_heapify(arr,i,len - 1);
+        }
+        for (int i = len - 1; i > 0; i--) {
+            swap(arr[0],arr[i]);
+            max_heapify(arr,0,i - 1);
+        }
+    }
 };
 
 
@@ -200,11 +238,21 @@ void testMergeSort(){
     cout << endl;
 }
 
-void testQUickSort(){
+void testQuickSort(){
     vector<int> arr = {5,4,8,10,28,9,777,44};
     Sort *p = new Sort();
     p->QuickSort(arr,0,7);
     for (int i = 0; i < arr.size(); ++i) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+}
+
+void testHeapSort(){
+    int arr[] = {5,4,8,10,28,9,777,44};
+    Sort *p = new Sort();
+    p->HeapSort(arr,8);
+    for (int i = 0; i < 8; ++i) {
         cout << arr[i] << " ";
     }
     cout << endl;
@@ -216,6 +264,7 @@ int main(){
 //    testInsertSort();
 //    testShellSort();
 //    testMergeSort();
-    testQUickSort();
+//    testQuickSort();
+    testHeapSort();
     return 0;
 }
